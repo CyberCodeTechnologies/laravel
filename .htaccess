@@ -1,0 +1,20 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect requests that include /public/ to remove it
+    # RewriteCond %{THE_REQUEST} /public/([^\s?]*) [NC]
+    # RewriteRule ^ /%1 [R=302,L,NE]
+
+    # Handle requests to the public directory
+    RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+    RewriteRule ^favicon\.png$ public/favicon.png [L]
+    RewriteRule ^robots\.txt$ public/robots.txt [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php [L]
+</IfModule>

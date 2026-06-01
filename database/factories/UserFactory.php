@@ -24,8 +24,12 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $fullName = fake()->name();
+        $nameParts = explode(' ', $fullName, 2);
+        
         return [
-            'name' => fake()->name(),
+            'first_name' => $nameParts[0],
+            'last_name' => $nameParts[1] ?? '',
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -40,6 +44,56 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is an artist.
+     */
+    public function artist(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'artist',
+            'is_approved' => true,
+            'is_active' => true,
+            'status' => 'approved',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a collector.
+     */
+    public function collector(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'collector',
+            'is_approved' => true,
+            'is_active' => true,
+            'status' => 'approved',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+            'is_approved' => true,
+            'is_active' => true,
+            'status' => 'approved',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is pending approval.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_approved' => false,
+            'status' => 'pending',
         ]);
     }
 }

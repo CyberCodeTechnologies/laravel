@@ -1,0 +1,38 @@
+name: Security and Static Analysis
+
+on:
+  push: {}
+  pull_request: {}
+
+jobs:
+  security:
+    name: Composer audit & PhpStan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Composer Audit
+        run: |
+          if composer --version >/dev/null 2>&1; then
+            composer audit --no-interaction || true
+          else
+            echo "composer not available"
+          fi
+
+      - name: PhpStan (optional)
+        run: |
+          if [ -f vendor/bin/phpstan ]; then
+            vendor/bin/phpstan analyse -l max || true
+          else
+            echo "phpstan not installed; skipping"
+          fi

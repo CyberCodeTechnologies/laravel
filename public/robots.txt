@@ -1,2 +1,26 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Disallow admin and authenticated routes
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /artist
+Disallow: /collector
+Disallow: /profile
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /transactions
+Disallow: /ownership
+Disallow: /resales/my-listings
+Disallow: /orders
+Disallow: /payment
+Disallow: /shipments
+
+# Disallow development files
+Disallow: /storage/
+Disallow: /vendor/
+Disallow: /.env
+
+# Sitemap
+Sitemap: https://panchigallery.com/sitemap.xml

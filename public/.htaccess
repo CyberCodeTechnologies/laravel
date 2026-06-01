@@ -3,7 +3,24 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    # Allow cross-origin loading of built assets from local dev origin
+    <IfModule mod_headers.c>
+        <FilesMatch "\.(js|css|png|jpg|jpeg|gif|svg|woff2?)$">
+            Header setifempty Access-Control-Allow-Origin "http://localhost"
+            Header setifempty Access-Control-Allow-Methods "GET, OPTIONS"
+            Header setifempty Access-Control-Allow-Headers "Content-Type, X-Requested-With"
+        </FilesMatch>
+    </IfModule>
+
     RewriteEngine On
+
+    # CORS for dynamic responses is handled by application middleware during local dev
+
+    # Force HTTPS for admin and authentication endpoints (avoid forcing site-wide to keep local dev working)
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteCond %{REQUEST_URI} ^/(admin|login|register|forgot-password|reset-password|public/admin|public/public/admin)
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
